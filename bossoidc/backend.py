@@ -105,8 +105,8 @@ def get_user_by_id(request, userinfo):
 
     access_token = get_access_token(request)
     audience = get_token_audience(access_token)
-    if not token_audience_is_valid(audience):
-        return None
+    # if not token_audience_is_valid(audience):
+    #     return None
 
     UserModel = get_user_model()
     uid = userinfo['sub']
