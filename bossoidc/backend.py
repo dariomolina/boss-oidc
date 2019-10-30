@@ -108,9 +108,11 @@ def get_user_by_id(request, userinfo):
     # if not token_audience_is_valid(audience):
     #     return None
 
+    subdomain = request.session["subdomain"]
+
     UserModel = get_user_model()
     uid = userinfo['sub']
-    username = userinfo['preferred_username']
+    username = '{}+{}'.format(userinfo['preferred_username'], subdomain)
 
     check_username(username)
 
@@ -135,9 +137,9 @@ def get_user_by_id(request, userinfo):
     #          user account.
 
     try: # try to lookup by keycloak UID first
-        kc_user = KeycloakModel.objects.get(UID = uid)
+        kc_user = KeycloakModel.objects.get(UID = uid, subdomain=request.session['subdomain'])
         user = kc_user.user
-    except KeycloakModel.DoesNotExist: # user doesn't exist with a keycloak UID
+    except KeycloakModel.DoesNotExist: # user doesn't exist with a keycloak UID and subdomain
         try:
             user = UserModel.objects.get_by_natural_key(username)
 
@@ -154,7 +156,7 @@ def get_user_by_id(request, userinfo):
 
         args = {UserModel.USERNAME_FIELD: username, 'defaults': openid_data, }
         user, created = UserModel.objects.update_or_create(**args)
-        kc_user = KeycloakModel.objects.create(user = user, UID = uid)
+        kc_user = KeycloakModel.objects.create(user = user, UID = uid, subdomain = subdomain)
 
     roles = get_roles(access_token)
     user.is_staff = 'admin' in roles or 'superuser' in roles

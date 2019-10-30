@@ -13,8 +13,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='keycloak',
-            name='realm',
-            field=models.CharField(default='', max_length=16),
-            preserve_default=False,
+            name='subdomain',
+            field=models.CharField(default=b'', max_length=64),
         ),
     ]

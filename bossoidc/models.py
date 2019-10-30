@@ -18,4 +18,4 @@ from django.db import models
 class Keycloak(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     UID = models.CharField(max_length=37, primary_key=True)
-    realm = models.CharField(max_length=16)
+    subdomain = models.CharField(max_length=64, default='')
