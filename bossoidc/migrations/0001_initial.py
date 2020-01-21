@@ -18,7 +18,6 @@ class Migration(migrations.Migration):
             name='Keycloak',
             fields=[
                 ('UID', models.CharField(max_length=37, primary_key=True, serialize=False)),
-                ('realm', models.CharField(max_length=16, serialize=False)),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
