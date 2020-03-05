@@ -112,7 +112,7 @@ def get_user_by_id(request, userinfo):
 
     UserModel = get_user_model()
     uid = userinfo['sub']
-    username = '{}+{}'.format(userinfo['preferred_username'], subdomain)
+    username = (userinfo['preferred_username'] + '+' + subdomain).encode('latin1').decode('utf-8')
 
     check_username(username)
 
