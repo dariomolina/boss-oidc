@@ -112,7 +112,15 @@ def get_user_by_id(request, userinfo):
 
     UserModel = get_user_model()
     uid = userinfo['sub']
-    username = (userinfo['preferred_username'] + '+' + subdomain).encode('latin1').decode('utf-8')
+    preferred_username = userinfo['preferred_username']
+    prefix_username = ''
+    try:
+        prefix_username = preferred_username.encode('latin1').decode('utf-8')
+    except Exception:
+        prefix_username = preferred_username
+    
+    plus_subdomain = '+'.decode('utf-8') + subdomain.decode('utf-8')
+    username = prefix_username + plus_subdomain
 
     check_username(username)
 
