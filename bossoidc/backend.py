@@ -165,6 +165,10 @@ def get_user_by_id(request, userinfo):
         args = {UserModel.USERNAME_FIELD: username, 'defaults': openid_data, }
         user, created = UserModel.objects.update_or_create(**args)
         kc_user = KeycloakModel.objects.create(user = user, UID = uid, subdomain = subdomain)
+            
+    if kc_user and kc_user.user_type == '':
+        kc_user.user_type = userinfo['https://www.openclinica.com/userContext']['userType']
+        kc_user.save()
 
     roles = get_roles(access_token)
     user.is_staff = 'admin' in roles or 'superuser' in roles
