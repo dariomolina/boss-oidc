@@ -166,7 +166,7 @@ def get_user_by_id(request, userinfo):
         user, created = UserModel.objects.update_or_create(**args)
         kc_user = KeycloakModel.objects.create(user = user, UID = uid, subdomain = subdomain)
             
-    if kc_user and kc_user.user_type == '':
+    if kc_user:
         kc_user.user_type = userinfo['https://www.openclinica.com/userContext']['userType']
         kc_user.save()
 
