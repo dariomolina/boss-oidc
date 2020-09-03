@@ -108,7 +108,7 @@ def get_user_by_id(request, userinfo):
     # if not token_audience_is_valid(audience):
     #     return None
 
-    subdomain = request.session["subdomain"]
+    subdomain = request.session['id_token'].get('sub')
 
     UserModel = get_user_model()
     uid = userinfo['sub']
@@ -119,7 +119,7 @@ def get_user_by_id(request, userinfo):
     except Exception:
         prefix_username = preferred_username
     
-    plus_subdomain = '+'.decode('utf-8') + subdomain.decode('utf-8')
+    plus_subdomain = '+' + subdomain
     username = prefix_username + plus_subdomain
 
     check_username(username)
@@ -145,7 +145,7 @@ def get_user_by_id(request, userinfo):
     #          user account.
 
     try: # try to lookup by keycloak UID first
-        kc_user = KeycloakModel.objects.get(UID = uid, subdomain=request.session['subdomain'])
+        kc_user = KeycloakModel.objects.get(UID = uid, subdomain=request.session['id_token'].get('sub'))
         user = kc_user.user
     except KeycloakModel.DoesNotExist: # user doesn't exist with a keycloak UID and subdomain
         try:
@@ -167,7 +167,8 @@ def get_user_by_id(request, userinfo):
         kc_user = KeycloakModel.objects.create(user = user, UID = uid, subdomain = subdomain)
             
     if kc_user:
-        kc_user.user_type = userinfo['https://www.openclinica.com/userContext']['userType']
+        #kc_user.user_type = userinfo['https://www.openclinica.com/userContext']['userType']
+        kc_user.user_type = 'KeycloakUser'
         kc_user.save()
 
     roles = get_roles(access_token)
